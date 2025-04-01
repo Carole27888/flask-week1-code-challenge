@@ -76,14 +76,14 @@ def remove_power():
     db.session.commit()
     return jsonify({"message": f"Power removed from hero."}), 200
 
-@app.route('/assign_power', methods=['POST'])
+@app.route('/hero_powers', methods=['POST'])
 def assign_power():
     data = request.get_json()
     hero_id = data.get('hero_id')
     power_id = data.get('power_id')
     strength = data.get('strength')
 
-    if strength not in ['strong', 'weak', 'Average']:
+    if strength not in ['strong', 'weak', 'average']:
         return jsonify({'error': 'Invalid strength'}), 400
     
     hero = Hero.query.get(hero_id)
@@ -99,10 +99,11 @@ def assign_power():
 
     try:
         db.session.commit()
-        return jsonify({"message": f"Power '{power.name}' assigned to hero '{hero.name}'."}), 201
+        return jsonify(hero_power.to_dict()), 201
     except IntegrityError:
         db.session.rollback()
-        return jsonify({'error': 'Power already assigned to hero'}), 400
+        return jsonify({'errors': ['Validation errors']}), 400
+
 
 
 @app.route('/heroes', methods = ['GET'])  
