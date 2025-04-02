@@ -10,7 +10,7 @@ class Hero(db.Model, SerializerMixin):
     name = db.Column(db.String, unique=True, nullable=False)
     super_name = db.Column(db.String, nullable=False)
 
-    hero_power_relationship = db.relationship('HeroPower', backref='hero_ref', lazy=True)
+    hero_power_relationship = db.relationship('HeroPower', backref='hero_ref')
     serialize_rules = ('-hero_power_relationship.power.hero_power_relationship', '-hero_power_relationship.hero.hero_power_relationship')
 
     def to_dict(self):
@@ -44,8 +44,8 @@ class HeroPower(db.Model, SerializerMixin):
     power_id = db.Column(db.Integer, db.ForeignKey('powers.id'), nullable=False)
     strength = db.Column(db.String, nullable=False)
 
-    hero = db.relationship('Hero', backref=db.backref('hero_powers', lazy=True))
-    power = db.relationship('Power', backref=db.backref('power_relationship', lazy=True))
+    hero = db.relationship('Hero', backref=db.backref('hero_powers'))
+    power = db.relationship('Power', backref=db.backref('power_relationship'))
 
     def to_dict(self):
         return {
